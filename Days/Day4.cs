@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Advent_Of_Code_2023.Days
+﻿namespace Advent_Of_Code_2023.Days
 {
     internal class Day4 : Day
     {
@@ -28,7 +22,6 @@ namespace Advent_Of_Code_2023.Days
         public void Star2()
         {
             var input = Input.Get("Day4");
-            int total = 0;
             List<Cards> cards = new List<Cards>();
             for (int i = 0; i < input.Length; i++)
                 cards.Add(new Cards() { ID = i+1, Amount = 1 });
@@ -40,7 +33,7 @@ namespace Advent_Of_Code_2023.Days
                 var winning = numbers.Split(" | ")[0];
                 var matches = numbers.Split(" | ")[1];
                 var count = winning.Split(' ').Where(x => matches.Split(' ').Any(c => c == x) && x != "").Count();
-                var card = cards.FirstOrDefault(x => x.ID == id);
+                var card = cards.First(x => x.ID == id);
                 for (int i = id+1; i < id+1+ count; i++)
                     cards.Where(n => n.ID == i).ToList().ForEach(x => x.Amount += card.Amount);
             }
