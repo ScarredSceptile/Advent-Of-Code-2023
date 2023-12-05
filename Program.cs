@@ -1,4 +1,5 @@
 ﻿using Advent_Of_Code_2023.Days;
+using System.Diagnostics;
 
 namespace Advent_Of_Code_2023
 {
@@ -6,8 +7,8 @@ namespace Advent_Of_Code_2023
     {
         static void Main(string[] args)
         {
-            Day day = new Day4();
-            day.Star2();
+            Day day = new Day5();
+            day.Star1();
         }
     }
 }
