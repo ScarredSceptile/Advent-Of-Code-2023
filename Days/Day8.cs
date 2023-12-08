@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Advent_Of_Code_2023.Days
+﻿namespace Advent_Of_Code_2023.Days
 {
     internal class Day8 : Day
     {
@@ -47,20 +41,12 @@ namespace Advent_Of_Code_2023.Days
                 nodes[i].Right = nodes.First(n => n.ID == ids.Split(", ")[1]);
             }
             var node = nodes.Where(n => n.ID.EndsWith("A")).ToArray();
-            int count = 0;
-            while (node.All(n => n.ID.EndsWith("Z") == true) == false)
+            List<long> z = new();
+            foreach (var n in node)
             {
-                for (int i = 0; i < node.Length; i++)
-                {
-                    var dir = direction[count % direction.Length];
-                    if (dir == 'L')
-                        node[i] = node[i].Left;
-                    else
-                        node[i] = node[i].Right;
-                }
-                count++;
+                z.Add(FirstZ(n, direction));
             }
-            Console.WriteLine(count);
+            Console.WriteLine(lcm(z.ToArray(), 0));
         }
 
         private class Node
@@ -69,6 +55,37 @@ namespace Advent_Of_Code_2023.Days
             public Node Left;
             public Node Right;
             public Node(string ID) { this.ID = ID; }
+        }
+
+        private long FirstZ(Node node, string direction)
+        {
+            long count = 0;
+            while (node.ID.EndsWith("Z") == false)
+            {
+                var dir = direction[(int)count % direction.Length];
+                if (dir == 'L')
+                    node = node.Left;
+                else
+                    node = node.Right;
+                count++;
+            }
+            return count;
+        }
+
+        private long gcd(long a, long b)
+        {
+            if (a == 0)
+                return b;
+            return gcd(b % a, a);
+        }
+
+        private long lcm(long[] arr, int idx)
+        {
+            if (idx ==  arr.Length - 1)
+                return arr[idx];
+            long a = arr[idx];
+            long b = lcm(arr, idx + 1);
+            return (a*b / gcd(a, b));
         }
     }
 }
