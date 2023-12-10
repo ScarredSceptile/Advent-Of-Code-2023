@@ -12,13 +12,67 @@ namespace Advent_Of_Code_2023.Days
         public void Star1()
         {
             var input = Input.Get("Day10");
+            var loop = GetLoop(input);
+            Console.WriteLine(loop.Count / 2 + 1);
+        }
+
+        public void Star2()
+        {
+            var input = Input.Get("Test");
+            var loop = GetLoop(input);
+            Console.WriteLine("Loop Found");
+            List<Vector2> tiles = new();
+            for (int i = 0; i < input.Length; i++)
+            {
+                for (int j = 0; j < input[i].Length; j++)
+                {
+                    if (loop.Any(n => n.pos.X == j && n.pos.Y == i) == false)
+                        tiles.Add(new Vector2(j, i));
+                }
+            }
+            Console.WriteLine("All tiles not in Loop found!");
+            List<List<Vector2>> tileGroups = new();
+            while (tiles.Count > 0)
+            {
+                Vector2 tile = tiles[0];
+                List<Vector2> Group = new() { tile };
+                tiles.Remove(tile);
+                bool GroupNotFound = true;
+                while (GroupNotFound)
+                {
+                    GroupNotFound = false;
+                    var close = tiles.Where(a => Group.Any(b => NextToEachOther(a, b))).ToList();
+                    if (close.Count > 0)
+                    {
+                        Group.AddRange(close);
+                        foreach (var a in close)
+                            tiles.Remove(a);
+                        GroupNotFound = true;
+                    }
+                }
+                tileGroups.Add(Group);
+            }
+            Console.WriteLine("All groups of tiles found!");
+
+            Console.WriteLine(tileGroups.Count);
+            tileGroups = tileGroups.Where(n => n.Any(c => c.X == 0 || c.Y == 0 || c.Y == input.Length - 1 || c.X == input[0].Length - 1) == false).ToList();
+
+            Console.WriteLine("Removed Edge groups");
+
+            //Implement method to parse which tiles are in the loop, and which arent
+
+            Console.WriteLine(tileGroups.Count);
+        }
+
+        private List<Pipe> GetLoop(string[] input)
+        {
             List<Pipe> pipes = new();
             for (int i = 0; i < input.Length; i++)
             {
                 for (int j = 0; j < input[i].Length; j++)
                 {
                     if (input[i][j] != '.')
-                    pipes.Add(new Pipe(input[i][j].ToString(), j, i));
+                        pipes.Add(new Pipe(input[i][j].ToString(), j, i));
                 }
             }
 
@@ -33,7 +87,7 @@ namespace Advent_Of_Code_2023.Days
                     if (pipe.CanConnect(start.pos))
                         nextPipe[k++] = pipe.pos;
             }
-            int count = 0;
+            List<Pipe> loop = new() { start };
             var previous = new[] { start.pos, start.pos };
             for (; ; )
             {
@@ -42,18 +96,24 @@ namespace Advent_Of_Code_2023.Days
                     var pipe = pipes.First(n => n.pos == nextPipe[i]);
                     nextPipe[i] = pipe.MoveNext(previous[i]);
                     previous[i] = pipe.pos;
+                    loop.Add(pipe);
                 }
 
-                count++;
                 if (nextPipe[0] == nextPipe[1])
                     break;
             }
-            Console.WriteLine(count + 1);
+            loop.RemoveAt(loop.Count - 1);
+            return loop;
         }
 
-        public void Star2()
+        private bool NextToEachOther(Vector2 a, Vector2 b)
         {
-            throw new NotImplementedException();
+            var diff = a - b;
+            if (Math.Abs(diff.X) == 1 && diff.Y == 0)
+                return true;
+            else if (Math.Abs(diff.Y) == 1 && diff.X == 0)
+                return true;
+            return false;
         }
 
         private class Pipe
