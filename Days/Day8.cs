@@ -15,16 +15,7 @@
                 nodes[i].Right = nodes.First(n => n.ID == ids.Split(", ")[1]);
             }
             var node = nodes.First(n => n.ID == "AAA");
-            int count = 0;
-            while (node.ID != "ZZZ")
-            {
-                var dir = direction[count % direction.Length];
-                if (dir == 'L')
-                    node = node.Left;
-                else
-                    node = node.Right;
-                count++;
-            }
+            var count = FirstZ(node, direction, "ZZZ");
             Console.WriteLine(count);
         }
 
@@ -44,7 +35,7 @@
             List<long> z = new();
             foreach (var n in node)
             {
-                z.Add(FirstZ(n, direction));
+                z.Add(FirstZ(n, direction, "Z"));
             }
             Console.WriteLine(lcm(z.ToArray(), 0));
         }
@@ -57,10 +48,10 @@
             public Node(string ID) { this.ID = ID; }
         }
 
-        private long FirstZ(Node node, string direction)
+        private long FirstZ(Node node, string direction, string ending)
         {
             long count = 0;
-            while (node.ID.EndsWith("Z") == false)
+            while (node.ID.EndsWith(ending) == false)
             {
                 var dir = direction[(int)count % direction.Length];
                 if (dir == 'L')

@@ -115,9 +115,7 @@ namespace Advent_Of_Code_2023.Days
                     j--;
                 if (i <= j)
                 {
-                    var temp  = hands[i];
-                    hands[i] = hands[j];
-                    hands[j] = temp;
+                    (hands[j], hands[i]) = (hands[i], hands[j]);
                     i++;
                     j--;
                 }
