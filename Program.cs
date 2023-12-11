@@ -7,7 +7,7 @@ namespace Advent_Of_Code_2023
     {
         static void Main(string[] args)
         {
-            Day day = new Day10();
+            Day day = new Day11();
             day.Star2();
         }
     }
